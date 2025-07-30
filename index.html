@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 在线查看器</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            overflow: hidden; /* 避免出现双滚动条 */
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 300px;
+            background-color: #fff;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            color: #333;
+            margin-top: 0;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .pdf-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .pdf-menu li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            border: 1px solid #eee;
+        }
+        .pdf-menu li:hover {
+            background-color: #f0f8ff;
+            color: #0056b3;
+        }
+        .pdf-menu li.active {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .viewer-container {
+            flex-grow: 1;
+            padding: 10px;
+            background-color: #e9ecef;
+        }
+        #pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .welcome-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: auto; /* Let it take full width */
+                height: auto;
+                max-height: 40vh; /* Limit height to avoid taking up the whole screen */
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+            .main-content {
+                height: 100vh; /* Ensure viewer takes up vertical space */
+            }
+            body, html {
+                overflow: auto; /* Re-enable scrolling for the page */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>文档列表</h2>
+            <ul class="pdf-menu" id="pdf-menu">
+                <li data-src="./妙课AI-赋能教育出版数字变革.pdf">妙课AI-赋能教育出版数字变革</li>
+                <li data-src="./妙课AI-赋能教育数字变革.pdf">妙课AI-赋能教育数字变革</li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <div class="viewer-container" id="viewer-container">
+                <div class="welcome-message">
+                    <h2>请从左侧选择一个PDF文件进行预览</h2>
+                </div>
+                <iframe id="pdf-viewer" style="display:none;"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('#pdf-menu li');
+            const viewer = document.getElementById('pdf-viewer');
+            const welcomeMessage = document.querySelector('.welcome-message');
+            const viewerContainer = document.getElementById('viewer-container');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有菜单项的 active class
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    // 给当前点击的项添加 active class
+                    this.classList.add('active');
+
+                    const pdfSrc = this.getAttribute('data-src');
+                    welcomeMessage.style.display = 'none';
+                    viewer.style.display = 'block';
+                    viewer.src = pdfSrc;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
